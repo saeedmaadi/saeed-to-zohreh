@@ -9,7 +9,6 @@
     :root{
       --bg1:#07070c; --bg2:#140b18;
       --card: rgba(255,255,255,0.06);
-      --card2: rgba(255,255,255,0.085);
       --border: rgba(255,255,255,0.14);
       --text:#f6f6ff; --muted:rgba(246,246,255,0.72);
       --accent:#ff4d7d; --accent2:#7c5cff;
@@ -80,6 +79,9 @@
       font-size: clamp(26px, 4vw, 46px);
       letter-spacing:-0.02em;
       line-height:1.05;
+      text-shadow:
+        0 0 25px rgba(255,77,125,0.12),
+        0 0 40px rgba(124,92,255,0.10);
     }
     .spark{
       background: linear-gradient(90deg, var(--accent), var(--accent2));
@@ -94,6 +96,11 @@
       padding:16px;
       backdrop-filter: blur(12px);
       box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+    .card:hover{
+      transform: translateY(-4px);
+      box-shadow: 0 22px 70px rgba(0,0,0,0.6);
     }
     .label{font-size:12px; color:var(--muted); margin:0 0 8px}
     .box{
@@ -140,9 +147,23 @@
       overflow:hidden;
       border:1px solid rgba(255,255,255,0.18);
       background: rgba(0,0,0,0.22);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:360px;
     }
     .frame img{width:100%; height:360px; object-fit:cover; display:block;}
-    @media (max-width:520px){ .frame img{height:280px;} }
+    @media (max-width:520px){
+      .frame{min-height:280px;}
+      .frame img{height:280px;}
+    }
+    .placeholder{
+      color:var(--muted);
+      font-size:13px;
+      padding:18px;
+      text-align:center;
+      line-height:1.5;
+    }
     .thumbs{
       display:grid;
       grid-template-columns: repeat(4, 1fr);
@@ -160,6 +181,7 @@
       box-shadow: 0 0 0 2px rgba(255,77,125,0.45) inset;
     }
     .thumbs button.active img{opacity:1;}
+    .footer{margin-top:14px; text-align:center; color:var(--muted); font-size:13px;}
 
     /* Floating hearts */
     .heart{
@@ -169,7 +191,6 @@
       text-shadow: 0 6px 18px rgba(0,0,0,0.65);
       will-change: transform, opacity;
     }
-    .footer{margin-top:14px; text-align:center; color:var(--muted); font-size:13px;}
   </style>
 </head>
 
@@ -191,9 +212,7 @@
         <!-- LEFT -->
         <div>
           <h1>Zohreh, you’re my <span class="spark">home</span> — wherever we are. 💖</h1>
-          <p class="sub">
-            I wanted to give you something small but personal: words, memories, and a bit of code.
-          </p>
+          <p class="sub">I wanted to give you something small but personal: words, memories, and a bit of code.</p>
 
           <div class="card">
             <div class="label">Message (tap “Play”)</div>
@@ -201,9 +220,8 @@
 
             <div class="divider"></div>
 
-            <!-- Persian romantic line -->
             <div class="label">یک جمله برای تو</div>
-            <div class="box" style="min-height:auto">
+            <div class="box" style="min-height:auto;text-align:center">
               تو بهترین اتفاقِ زندگیِ منی… دوستت دارم، همیشه. 💖
             </div>
 
@@ -223,7 +241,7 @@
 
           <div class="card" style="margin-top:14px">
             <div class="label">A short dua</div>
-            <div class="box" style="min-height:auto">
+            <div class="box" style="min-height:auto;text-align:center">
               May Allah fill our home with mercy, barakah, and calm hearts — and keep love between us growing
               with patience and kindness. آمین
             </div>
@@ -234,9 +252,12 @@
         <div>
           <div class="card">
             <div class="label">Our Memories</div>
-            <div class="frame">
-              <!-- IMPORTANT: your photos are in repo root, so no "assets/" -->
-              <img id="mainPhoto" src="photo_1.jpeg" alt="Saeed and Zohreh" />
+            <div class="frame" id="frame">
+              <div class="placeholder" id="phMsg">
+                Loading photos…<br/>
+                If you still see this, your photo filenames in GitHub don’t match the code.
+              </div>
+              <img id="mainPhoto" src="" alt="Saeed and Zohreh" style="display:none" />
             </div>
             <div class="thumbs" id="thumbs"></div>
             <div class="footer">Tap a photo • then tap “Play”.</div>
@@ -256,26 +277,64 @@
     }
     tick(); setInterval(tick, 1000);
 
-    // Photos (root filenames)
-    const photos = ["photo_1.jpeg","photo_2.jpeg","photo_3.jpeg","photo_4.jpeg"];
+    // ----- PHOTO FIX: Auto-detect which files exist in repo root -----
+    // Add more candidates here if your filenames differ.
+    const photoCandidates = [
+      "photo_1.jpeg","photo_2.jpeg","photo_3.jpeg","photo_4.jpeg",
+      "photo_1.jpg","photo_2.jpg","photo_3.jpg","photo_4.jpg",
+      "Photo_1.jpeg","Photo_2.jpeg","Photo_3.jpeg","Photo_4.jpeg",
+      "IMG_1.jpeg","IMG_2.jpeg","IMG_3.jpeg","IMG_4.jpeg"
+    ];
+
     const mainPhoto = document.getElementById('mainPhoto');
     const thumbs = document.getElementById('thumbs');
+    const phMsg = document.getElementById('phMsg');
 
-    photos.forEach((src, i) => {
-      const b = document.createElement('button');
-      b.type = "button";
-      b.className = i === 0 ? "active" : "";
-      b.addEventListener('click', () => {
-        mainPhoto.src = src;
-        [...thumbs.children].forEach((c, idx) => c.classList.toggle('active', idx === i));
-        burstHearts(6);
+    function exists(src){
+      return new Promise(resolve => {
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = src + "?v=" + Date.now(); // cache-bust
       });
-      const img = document.createElement('img');
-      img.src = src;
-      img.alt = "thumb " + (i+1);
-      b.appendChild(img);
-      thumbs.appendChild(b);
-    });
+    }
+
+    async function loadPhotos(){
+      const found = [];
+      for (const f of photoCandidates){
+        if (await exists(f)) found.push(f);
+      }
+      // remove duplicates while preserving order
+      const unique = [...new Set(found)];
+
+      if (unique.length === 0){
+        phMsg.innerHTML = `No photos found.<br/>Go to GitHub repo and check exact filenames.<br/><b>Tip:</b> keep them as photo_1.jpeg … photo_4.jpeg`;
+        return;
+      }
+
+      // Show main photo
+      phMsg.style.display = "none";
+      mainPhoto.style.display = "block";
+      mainPhoto.src = unique[0];
+
+      // Build thumbnails
+      unique.forEach((src, i) => {
+        const b = document.createElement('button');
+        b.type = "button";
+        b.className = i === 0 ? "active" : "";
+        b.addEventListener('click', () => {
+          mainPhoto.src = src;
+          [...thumbs.children].forEach((c, idx) => c.classList.toggle('active', idx === i));
+          burstHearts(6);
+        });
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = "thumb " + (i+1);
+        b.appendChild(img);
+        thumbs.appendChild(b);
+      });
+    }
+    loadPhotos();
 
     // Message + reasons
     const HER_NAME = "Zohreh";
@@ -384,8 +443,12 @@
       }
     });
 
-    // Initial text
-    typeBox.textContent = `Hi ${HER_NAME} 💖\\n\\nI made this for you. Tap Play.\\n\\n— ${YOUR_NAME}`;
+    // Initial text (fix the visible \n issue by using real new lines)
+    typeBox.textContent = `Hi ${HER_NAME} 💖
+
+I made this for you. Tap Play.
+
+— ${YOUR_NAME}`;
   </script>
 </body>
 </html>
