@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Saeed → Zohreh 💖</title>
+<style>
+body{margin:0;font-family:Arial;background:#0b0b12;color:white}
+.wrap{max-width:900px;margin:auto;padding:20px}
+.card{background:#111;border-radius:16px;padding:16px;margin-bottom:16px}
+img{width:100%;border-radius:12px}
+button{padding:10px 14px;border-radius:10px;border:none;background:#ff4d7d;color:white;font-weight:bold;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Saeed → Zohreh 💖</h1>
+
+<div class="card">
+<h3>Message</h3>
+<pre id="msg">Hi Zohreh 💖
+I made this for you.
+
+— Saeed</pre>
+<button onclick="play()">Play</button>
+</div>
+
+<div class="card">
+<h3>Our Memories</h3>
+<img id="mainPhoto" src="assets/photo_1.jpeg">
+</div>
+
+</div>
+
+<script>
+const photos = ["assets/photo_1.jpeg", "assets/photo_2.jpeg", "assets/photo_3.jpeg", "assets/photo_4.jpeg"];
+function play(){
+document.getElementById("msg").textContent=`Dear Zohreh,
+
+You bring peace into my life.
+Thank you for your kindness and love.
+
+Happy Valentine’s Day ❤️
+
+— Saeed`;
+}
+</script>
+</body>
+</html>
