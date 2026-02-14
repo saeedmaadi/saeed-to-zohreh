@@ -147,23 +147,9 @@
       overflow:hidden;
       border:1px solid rgba(255,255,255,0.18);
       background: rgba(0,0,0,0.22);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      min-height:360px;
     }
     .frame img{width:100%; height:360px; object-fit:cover; display:block;}
-    @media (max-width:520px){
-      .frame{min-height:280px;}
-      .frame img{height:280px;}
-    }
-    .placeholder{
-      color:var(--muted);
-      font-size:13px;
-      padding:18px;
-      text-align:center;
-      line-height:1.5;
-    }
+    @media (max-width:520px){ .frame img{height:280px;} }
     .thumbs{
       display:grid;
       grid-template-columns: repeat(4, 1fr);
@@ -252,12 +238,8 @@
         <div>
           <div class="card">
             <div class="label">Our Memories</div>
-            <div class="frame" id="frame">
-              <div class="placeholder" id="phMsg">
-                Loading photos…<br/>
-                If you still see this, your photo filenames in GitHub don’t match the code.
-              </div>
-              <img id="mainPhoto" src="" alt="Saeed and Zohreh" style="display:none" />
+            <div class="frame">
+              <img id="mainPhoto" src="assets/photo_1.jpeg" alt="Saeed and Zohreh" />
             </div>
             <div class="thumbs" id="thumbs"></div>
             <div class="footer">Tap a photo • then tap “Play”.</div>
@@ -277,80 +259,46 @@
     }
     tick(); setInterval(tick, 1000);
 
-    // ----- PHOTO FIX: Auto-detect which files exist in repo root -----
-    // Add more candidates here if your filenames differ.
-    const photoCandidates = [
-      "photo_1.jpeg","photo_2.jpeg","photo_3.jpeg","photo_4.jpeg",
-      "photo_1.jpg","photo_2.jpg","photo_3.jpg","photo_4.jpg",
-      "Photo_1.jpeg","Photo_2.jpeg","Photo_3.jpeg","Photo_4.jpeg",
-      "IMG_1.jpeg","IMG_2.jpeg","IMG_3.jpeg","IMG_4.jpeg"
+    // Photos (your repo structure)
+    const photos = [
+      "assets/photo_1.jpeg",
+      "assets/photo_2.jpeg",
+      "assets/photo_3.jpeg",
+      "assets/photo_4.jpeg"
     ];
 
     const mainPhoto = document.getElementById('mainPhoto');
     const thumbs = document.getElementById('thumbs');
-    const phMsg = document.getElementById('phMsg');
 
-    function exists(src){
-      return new Promise(resolve => {
-        const img = new Image();
-        img.onload = () => resolve(true);
-        img.onerror = () => resolve(false);
-        img.src = src + "?v=" + Date.now(); // cache-bust
+    photos.forEach((src, i) => {
+      const b = document.createElement('button');
+      b.type = "button";
+      b.className = i === 0 ? "active" : "";
+      b.addEventListener('click', () => {
+        mainPhoto.src = src;
+        [...thumbs.children].forEach((c, idx) => c.classList.toggle('active', idx === i));
+        burstHearts(6);
       });
-    }
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = "thumb " + (i+1);
+      b.appendChild(img);
+      thumbs.appendChild(b);
+    });
 
-    async function loadPhotos(){
-      const found = [];
-      for (const f of photoCandidates){
-        if (await exists(f)) found.push(f);
-      }
-      // remove duplicates while preserving order
-      const unique = [...new Set(found)];
-
-      if (unique.length === 0){
-        phMsg.innerHTML = `No photos found.<br/>Go to GitHub repo and check exact filenames.<br/><b>Tip:</b> keep them as photo_1.jpeg … photo_4.jpeg`;
-        return;
-      }
-
-      // Show main photo
-      phMsg.style.display = "none";
-      mainPhoto.style.display = "block";
-      mainPhoto.src = unique[0];
-
-      // Build thumbnails
-      unique.forEach((src, i) => {
-        const b = document.createElement('button');
-        b.type = "button";
-        b.className = i === 0 ? "active" : "";
-        b.addEventListener('click', () => {
-          mainPhoto.src = src;
-          [...thumbs.children].forEach((c, idx) => c.classList.toggle('active', idx === i));
-          burstHearts(6);
-        });
-        const img = document.createElement('img');
-        img.src = src;
-        img.alt = "thumb " + (i+1);
-        b.appendChild(img);
-        thumbs.appendChild(b);
-      });
-    }
-    loadPhotos();
-
-    // Message + reasons
+    // Message + reasons (NO \n shown — real line breaks)
     const HER_NAME = "Zohreh";
     const YOUR_NAME = "Saeed";
 
-    const MESSAGE = [
-      `Dear ${HER_NAME},`,
-      "",
-      "You bring peace into my life.",
-      "Thank you for your kindness, your strength, and the love you give so naturally.",
-      "",
-      "I’m grateful for our journey, our memories, and our future.",
-      "",
-      "Happy Valentine’s Day 💖",
-      `— ${YOUR_NAME}`
-    ].join("\\n");
+    const MESSAGE = `Dear ${HER_NAME},
+
+You bring peace into my life.
+Thank you for your kindness, your strength, and the love you give so naturally.
+
+I’m grateful for our journey, our memories, and our future.
+
+Happy Valentine’s Day 💖
+— ${YOUR_NAME}`;
 
     const REASONS = [
       "You make our home feel warm, even on hard days.",
@@ -377,7 +325,7 @@
       for(let i=0;i<text.length;i++){
         typeBox.textContent += text[i];
         const c=text[i];
-        await sleep((c==="\\n"?110:16) + Math.random()*30);
+        await sleep((c==="\n"?110:16) + Math.random()*30);
       }
       typing=false; typedOnce=true;
       playBtn.textContent="↻ Replay";
@@ -394,9 +342,13 @@
     reasonBtn.addEventListener('click', () => {
       const r = pick(REASONS);
       if(!typedOnce && !typing){
-        typeBox.textContent = `One reason I love you:\\n\\n• ${r}\\n\\nTap Play for the full message.`;
+        typeBox.textContent = `One reason I love you:
+
+• ${r}
+
+Tap Play for the full message.`;
       } else if(!typing){
-        typeBox.textContent += `\\n\\n• ${r}`;
+        typeBox.textContent += `\n\n• ${r}`;
       }
       burstHearts(8);
     });
@@ -443,7 +395,7 @@
       }
     });
 
-    // Initial text (fix the visible \n issue by using real new lines)
+    // Initial text (clean, no \n showing)
     typeBox.textContent = `Hi ${HER_NAME} 💖
 
 I made this for you. Tap Play.
