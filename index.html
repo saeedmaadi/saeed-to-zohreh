@@ -1,49 +1,391 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Saeed → Zohreh 💖</title>
-<style>
-body{margin:0;font-family:Arial;background:#0b0b12;color:white}
-.wrap{max-width:900px;margin:auto;padding:20px}
-.card{background:#111;border-radius:16px;padding:16px;margin-bottom:16px}
-img{width:100%;border-radius:12px}
-button{padding:10px 14px;border-radius:10px;border:none;background:#ff4d7d;color:white;font-weight:bold;cursor:pointer}
-</style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Saeed → Zohreh 💖</title>
+  <meta name="description" content="A tiny love letter, made with code — Saeed to Zohreh." />
+  <style>
+    :root{
+      --bg1:#07070c; --bg2:#140b18;
+      --card: rgba(255,255,255,0.06);
+      --card2: rgba(255,255,255,0.085);
+      --border: rgba(255,255,255,0.14);
+      --text:#f6f6ff; --muted:rgba(246,246,255,0.72);
+      --accent:#ff4d7d; --accent2:#7c5cff;
+      --shadow: 0 18px 60px rgba(0,0,0,0.55);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; min-height:100vh;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 900px at 20% 10%, rgba(255,77,125,0.18), transparent 60%),
+        radial-gradient(900px 650px at 80% 20%, rgba(124,92,255,0.20), transparent 55%),
+        radial-gradient(900px 900px at 50% 95%, rgba(255,255,255,0.08), transparent 60%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      overflow-x:hidden;
+    }
+    .wrap{max-width:1050px; margin:0 auto; padding:28px 18px 70px;}
+    .top{display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:14px;}
+    .badge{
+      display:flex; gap:10px; align-items:center;
+      padding:10px 12px; border-radius:999px;
+      background: rgba(255,255,255,0.08);
+      border:1px solid var(--border);
+      backdrop-filter: blur(10px);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.45);
+    }
+    .dot{
+      width:10px; height:10px; border-radius:50%;
+      background: radial-gradient(circle at 30% 30%, #fff, var(--accent));
+      box-shadow: 0 0 18px rgba(255,77,125,0.8);
+    }
+    .pill{
+      padding:8px 10px; border-radius:999px;
+      background: rgba(255,255,255,0.06);
+      border:1px solid var(--border);
+      color:var(--muted);
+      font-size:12px;
+      backdrop-filter: blur(10px);
+    }
+    .hero{
+      border-radius:26px;
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.05));
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    .hero:before{
+      content:"";
+      position:absolute; inset:-2px;
+      background:
+        radial-gradient(520px 280px at 12% 18%, rgba(255,77,125,0.22), transparent 60%),
+        radial-gradient(520px 280px at 88% 22%, rgba(124,92,255,0.22), transparent 60%);
+      filter: blur(8px);
+      pointer-events:none;
+    }
+    .inner{
+      position:relative;
+      padding:26px 22px 22px;
+      display:grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap:18px;
+    }
+    @media (max-width: 900px){ .inner{grid-template-columns:1fr} }
+    h1{
+      margin:0 0 10px;
+      font-size: clamp(26px, 4vw, 46px);
+      letter-spacing:-0.02em;
+      line-height:1.05;
+    }
+    .spark{
+      background: linear-gradient(90deg, var(--accent), var(--accent2));
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+      font-weight:800;
+    }
+    .sub{margin:0 0 14px; color:var(--muted); line-height:1.6; max-width:62ch;}
+    .card{
+      background: var(--card);
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:16px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.45);
+    }
+    .label{font-size:12px; color:var(--muted); margin:0 0 8px}
+    .box{
+      white-space:pre-wrap;
+      border-radius:14px;
+      border:1px dashed rgba(255,255,255,0.28);
+      background: rgba(0,0,0,0.22);
+      padding:14px;
+      line-height:1.65;
+      min-height:110px;
+      font-size:15px;
+    }
+    .row{display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:12px;}
+    .btn{
+      cursor:pointer;
+      border-radius:14px;
+      padding:10px 14px;
+      border:1px solid rgba(255,255,255,0.22);
+      background: rgba(255,255,255,0.08);
+      color:var(--text);
+      font-weight:700;
+      transition: transform .08s ease, background .2s ease, border-color .2s ease;
+      user-select:none;
+    }
+    .btn:hover{background: rgba(255,255,255,0.11); border-color: rgba(255,255,255,0.30);}
+    .btn:active{transform: translateY(1px);}
+    .btn.primary{
+      border:none;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      box-shadow: 0 14px 32px rgba(255,77,125,0.18);
+    }
+    .divider{height:1px; background: rgba(255,255,255,0.12); margin:12px 0;}
+    .names{display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-top:12px;}
+    .tag{
+      padding:8px 11px; border-radius:999px;
+      border:1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.06);
+      font-weight:800;
+    }
+
+    /* Gallery */
+    .frame{
+      border-radius:16px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,0.18);
+      background: rgba(0,0,0,0.22);
+    }
+    .frame img{width:100%; height:360px; object-fit:cover; display:block;}
+    @media (max-width:520px){ .frame img{height:280px;} }
+    .thumbs{
+      display:grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap:8px;
+      margin-top:12px;
+    }
+    .thumbs button{
+      padding:0; border-radius:12px; overflow:hidden; cursor:pointer;
+      border:1px solid rgba(255,255,255,0.18);
+      background: rgba(0,0,0,0.25);
+    }
+    .thumbs img{width:100%; height:70px; object-fit:cover; display:block; opacity:.86;}
+    .thumbs button.active{
+      border-color: rgba(255,255,255,0.45);
+      box-shadow: 0 0 0 2px rgba(255,77,125,0.45) inset;
+    }
+    .thumbs button.active img{opacity:1;}
+
+    /* Floating hearts */
+    .heart{
+      position:fixed; left:0; top:0;
+      pointer-events:none;
+      font-size:18px;
+      text-shadow: 0 6px 18px rgba(0,0,0,0.65);
+      will-change: transform, opacity;
+    }
+    .footer{margin-top:14px; text-align:center; color:var(--muted); font-size:13px;}
+  </style>
 </head>
+
 <body>
-<div class="wrap">
-<h1>Saeed → Zohreh 💖</h1>
+  <div class="wrap">
+    <div class="top">
+      <div class="badge">
+        <span class="dot"></span>
+        <div>
+          <div style="font-weight:850">Saeed → Zohreh</div>
+          <div style="font-size:13px;color:var(--muted)">a little love letter • made with code</div>
+        </div>
+      </div>
+      <div class="pill" id="clock">--:--</div>
+    </div>
 
-<div class="card">
-<h3>Message</h3>
-<pre id="msg">Hi Zohreh 💖
-I made this for you.
+    <section class="hero">
+      <div class="inner">
+        <!-- LEFT -->
+        <div>
+          <h1>Zohreh, you’re my <span class="spark">home</span> — wherever we are. 💖</h1>
+          <p class="sub">
+            I wanted to give you something small but personal: words, memories, and a bit of code.
+          </p>
 
-— Saeed</pre>
-<button onclick="play()">Play</button>
-</div>
+          <div class="card">
+            <div class="label">Message (tap “Play”)</div>
+            <div class="box" id="typeBox"></div>
 
-<div class="card">
-<h3>Our Memories</h3>
-<img id="mainPhoto" src="assets/photo_1.jpeg">
-</div>
+            <div class="divider"></div>
 
-</div>
+            <!-- Persian romantic line -->
+            <div class="label">یک جمله برای تو</div>
+            <div class="box" style="min-height:auto">
+              تو بهترین اتفاقِ زندگیِ منی… دوستت دارم، همیشه. 💖
+            </div>
 
-<script>
-const photos = ["assets/photo_1.jpeg", "assets/photo_2.jpeg", "assets/photo_3.jpeg", "assets/photo_4.jpeg"];
-function play(){
-document.getElementById("msg").textContent=`Dear Zohreh,
+            <div class="row">
+              <button class="btn primary" id="playBtn">▶ Play</button>
+              <button class="btn" id="reasonBtn">✨ Another reason</button>
+              <button class="btn" id="heartsBtn">💞 Hearts</button>
+              <button class="btn" id="copyBtn">Copy</button>
+            </div>
+          </div>
 
-You bring peace into my life.
-Thank you for your kindness and love.
+          <div class="names">
+            <span class="tag">Saeed</span>
+            <span style="opacity:.8">♥</span>
+            <span class="tag">Zohreh</span>
+          </div>
 
-Happy Valentine’s Day ❤️
+          <div class="card" style="margin-top:14px">
+            <div class="label">A short dua</div>
+            <div class="box" style="min-height:auto">
+              May Allah fill our home with mercy, barakah, and calm hearts — and keep love between us growing
+              with patience and kindness. آمین
+            </div>
+          </div>
+        </div>
 
-— Saeed`;
-}
-</script>
+        <!-- RIGHT -->
+        <div>
+          <div class="card">
+            <div class="label">Our Memories</div>
+            <div class="frame">
+              <!-- IMPORTANT: your photos are in repo root, so no "assets/" -->
+              <img id="mainPhoto" src="photo_1.jpeg" alt="Saeed and Zohreh" />
+            </div>
+            <div class="thumbs" id="thumbs"></div>
+            <div class="footer">Tap a photo • then tap “Play”.</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Clock
+    const clockEl = document.getElementById('clock');
+    function tick(){
+      const d = new Date();
+      clockEl.textContent = String(d.getHours()).padStart(2,'0') + ":" + String(d.getMinutes()).padStart(2,'0');
+    }
+    tick(); setInterval(tick, 1000);
+
+    // Photos (root filenames)
+    const photos = ["photo_1.jpeg","photo_2.jpeg","photo_3.jpeg","photo_4.jpeg"];
+    const mainPhoto = document.getElementById('mainPhoto');
+    const thumbs = document.getElementById('thumbs');
+
+    photos.forEach((src, i) => {
+      const b = document.createElement('button');
+      b.type = "button";
+      b.className = i === 0 ? "active" : "";
+      b.addEventListener('click', () => {
+        mainPhoto.src = src;
+        [...thumbs.children].forEach((c, idx) => c.classList.toggle('active', idx === i));
+        burstHearts(6);
+      });
+      const img = document.createElement('img');
+      img.src = src;
+      img.alt = "thumb " + (i+1);
+      b.appendChild(img);
+      thumbs.appendChild(b);
+    });
+
+    // Message + reasons
+    const HER_NAME = "Zohreh";
+    const YOUR_NAME = "Saeed";
+
+    const MESSAGE = [
+      `Dear ${HER_NAME},`,
+      "",
+      "You bring peace into my life.",
+      "Thank you for your kindness, your strength, and the love you give so naturally.",
+      "",
+      "I’m grateful for our journey, our memories, and our future.",
+      "",
+      "Happy Valentine’s Day 💖",
+      `— ${YOUR_NAME}`
+    ].join("\\n");
+
+    const REASONS = [
+      "You make our home feel warm, even on hard days.",
+      "Your kindness shows in the little details.",
+      "You are my best friend, not just my partner.",
+      "You inspire me to be better — with patience and purpose.",
+      "I trust you completely.",
+      "Your smile fixes my mood instantly."
+    ];
+
+    const typeBox = document.getElementById('typeBox');
+    const playBtn = document.getElementById('playBtn');
+    const reasonBtn = document.getElementById('reasonBtn');
+    const heartsBtn = document.getElementById('heartsBtn');
+    const copyBtn = document.getElementById('copyBtn');
+
+    let typing=false, typedOnce=false;
+
+    function sleep(ms){ return new Promise(r => setTimeout(r, ms)); }
+
+    async function typewrite(text){
+      typing=true;
+      typeBox.textContent="";
+      for(let i=0;i<text.length;i++){
+        typeBox.textContent += text[i];
+        const c=text[i];
+        await sleep((c==="\\n"?110:16) + Math.random()*30);
+      }
+      typing=false; typedOnce=true;
+      playBtn.textContent="↻ Replay";
+    }
+
+    playBtn.addEventListener('click', () => {
+      if(typing) return;
+      typewrite(MESSAGE);
+      burstHearts(12);
+    });
+
+    function pick(a){ return a[Math.floor(Math.random()*a.length)]; }
+
+    reasonBtn.addEventListener('click', () => {
+      const r = pick(REASONS);
+      if(!typedOnce && !typing){
+        typeBox.textContent = `One reason I love you:\\n\\n• ${r}\\n\\nTap Play for the full message.`;
+      } else if(!typing){
+        typeBox.textContent += `\\n\\n• ${r}`;
+      }
+      burstHearts(8);
+    });
+
+    // Hearts
+    const HEARTS = ["💖","💗","💘","💞","💓","❤️","✨"];
+    function makeHeart(){
+      const el=document.createElement('div');
+      el.className="heart";
+      el.textContent=pick(HEARTS);
+      const x=Math.random()*window.innerWidth;
+      const y=window.innerHeight+20;
+      const dx=(Math.random()*2-1)*40;
+      const dur=1400+Math.random()*900;
+      el.style.transform = `translate(${x}px, ${y}px)`;
+      el.style.opacity="1";
+      document.body.appendChild(el);
+
+      const start=performance.now();
+      function anim(t){
+        const p=Math.min(1,(t-start)/dur);
+        const ease=1-Math.pow(1-p,3);
+        const yy=y - ease*(window.innerHeight*0.75+120);
+        const xx=x + Math.sin(ease*3.14)*dx;
+        el.style.transform = `translate(${xx}px, ${yy}px) scale(${0.9+ease*0.35})`;
+        el.style.opacity = String(1-p);
+        if(p<1) requestAnimationFrame(anim);
+        else el.remove();
+      }
+      requestAnimationFrame(anim);
+    }
+    function burstHearts(n=12){ for(let i=0;i<n;i++) setTimeout(makeHeart, i*45); }
+    heartsBtn.addEventListener('click', () => burstHearts(26));
+
+    copyBtn.addEventListener('click', async () => {
+      const text = typeBox.textContent || MESSAGE;
+      try{
+        await navigator.clipboard.writeText(text);
+        copyBtn.textContent="Copied ✓";
+        setTimeout(()=>copyBtn.textContent="Copy", 1100);
+        burstHearts(10);
+      }catch(e){
+        alert("Copy failed. Long-press and copy manually.");
+      }
+    });
+
+    // Initial text
+    typeBox.textContent = `Hi ${HER_NAME} 💖\\n\\nI made this for you. Tap Play.\\n\\n— ${YOUR_NAME}`;
+  </script>
 </body>
 </html>
